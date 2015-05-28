@@ -16,8 +16,6 @@ var citygmlPoints = require("citygml-points");
 var points3dto2d = require("points-3d-to-2d");
 var triangulate = require("triangulate");
 
-module.exports = citygmlValidatePolygon;
-
 var citygmlValidatePolygon = function(polygonXML, callback) {
   // Get exterior and interior boundaries for polygon (outer and holes)
   var rings = citygmlBoundaries(polygonXML);
@@ -497,3 +495,5 @@ var normalUnit = function(p1, p2, p3) {
 
   return normals;
 };
+
+module.exports = citygmlValidatePolygon;
