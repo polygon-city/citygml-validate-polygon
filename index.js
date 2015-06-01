@@ -21,6 +21,7 @@ var citygmlValidatePolygon = function(polygonXML, callback) {
   var rings = citygmlBoundaries(polygonXML);
 
   // Validate polygon
+  // Validation errors are stored within results array
   async.series([
     GE_P_INTERSECTION_RINGS(rings),
     GE_P_DUPLICATED_RINGS(rings),
@@ -119,7 +120,7 @@ var GE_P_INTERSECTION_RINGS = function(rings) {
     if (intersections.length === 0) {
       callback(null);
     } else {
-      callback(new Error("GE_P_INTERSECTION_RINGS: Two or more rings intersect"), intersections);
+      callback(null, [new Error("GE_P_INTERSECTION_RINGS: Two or more rings intersect"), intersections]);
     }
   };
 };
@@ -169,7 +170,7 @@ var GE_P_DUPLICATED_RINGS = function(rings) {
     if (duplicatedRings.length === 0) {
       callback(null);
     } else {
-      callback(new Error("GE_P_DUPLICATED_RINGS: Two or more rings are identical"), duplicatedRings);
+      callback(null, [new Error("GE_P_DUPLICATED_RINGS: Two or more rings are identical"), duplicatedRings]);
     }
   };
 };
@@ -227,7 +228,7 @@ var GE_P_NON_PLANAR_POLYGON_DISTANCE_PLANE = function(rings) {
     if (nonPlanars.length === 0) {
       callback(null);
     } else {
-      callback(new Error("GE_P_NON_PLANAR_POLYGON_DISTANCE_PLANE: A polygon must be planar"), nonPlanars);
+      callback(null, [new Error("GE_P_NON_PLANAR_POLYGON_DISTANCE_PLANE: A polygon must be planar"), nonPlanars]);
     }
   };
 };
@@ -262,7 +263,7 @@ var GE_P_NON_PLANAR_POLYGON_NORMALS_DEVIATION = function(rings) {
       try {
         faces = triangulate(checkRingPoints);
       } catch(err) {
-        callback(new Error("GE_P_NON_PLANAR_POLYGON_NORMALS_DEVIATION: Unable to triangulate polygon"), checkRingPoints);
+        callback(null, [new Error("GE_P_NON_PLANAR_POLYGON_NORMALS_DEVIATION: Unable to triangulate polygon"), checkRingPoints]);
         return;
       }
 
@@ -299,7 +300,7 @@ var GE_P_NON_PLANAR_POLYGON_NORMALS_DEVIATION = function(rings) {
     if (nonPlanars.length === 0) {
       callback(null);
     } else {
-      callback(new Error("GE_P_NON_PLANAR_POLYGON_NORMALS_DEVIATION: The orientation of the normal of each triangle must not deviate more than 1 degree"), nonPlanars);
+      callback(null, [new Error("GE_P_NON_PLANAR_POLYGON_NORMALS_DEVIATION: The orientation of the normal of each triangle must not deviate more than 1 degree"), nonPlanars]);
     }
   };
 };
@@ -364,7 +365,7 @@ var GE_P_HOLE_OUTSIDE = function(rings) {
       if (outsides.length === 0) {
         callback(null);
       } else {
-        callback(new Error("GE_P_HOLE_OUTSIDE: One or more interior rings are located completely outside the exterior ring"), outsides);
+        callback(null, [new Error("GE_P_HOLE_OUTSIDE: One or more interior rings are located completely outside the exterior ring"), outsides]);
       }
     });
   };
@@ -419,7 +420,7 @@ var GE_P_INNER_RINGS_NESTED = function(rings) {
     if (insides.length === 0) {
       callback(null);
     } else {
-      callback(new Error("GE_P_INNER_RINGS_NESTED: One or more interior rings are located completely inside another interior ring"), insides);
+      callback(null, [new Error("GE_P_INNER_RINGS_NESTED: One or more interior rings are located completely inside another interior ring"), insides]);
     }
   };
 };
@@ -467,7 +468,7 @@ var GE_P_ORIENTATION_RINGS_SAME = function(rings) {
     if (matches.length === 0) {
       callback(null);
     } else {
-      callback(new Error("GE_P_ORIENTATION_RINGS_SAME: The interior rings must have the opposite direction when viewed from a given point-of-view"), matches);
+      callback(null, [new Error("GE_P_ORIENTATION_RINGS_SAME: The interior rings must have the opposite direction when viewed from a given point-of-view"), matches]);
     }
   };
 };
