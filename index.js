@@ -32,7 +32,12 @@ var citygmlValidatePolygon = function(polygonXML, callback) {
     GE_P_INNER_RINGS_NESTED(rings),
     GE_P_ORIENTATION_RINGS_SAME(rings)
   ], function(err, results) {
-    callback(err, results);
+    // Remove passes (undefined)
+    var failures = _.filter(results, function(result) {
+      return (result && result[0]);
+    });
+
+    callback(err, failures);
   });
 };
 
