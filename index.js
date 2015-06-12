@@ -258,6 +258,7 @@ var GE_P_NON_PLANAR_POLYGON_NORMALS_DEVIATION = function(rings) {
     var checkRingPoints;
 
     var nonPlanars = [];
+    var triangulationErrorPoints;
 
     _.each(checkRings, function(checkRingXML) {
       checkRingPoints = citygmlPoints(checkRingXML);
@@ -268,8 +269,8 @@ var GE_P_NON_PLANAR_POLYGON_NORMALS_DEVIATION = function(rings) {
       try {
         faces = triangulate(checkRingPoints);
       } catch(err) {
-        callback(null, [new Error("GE_P_NON_PLANAR_POLYGON_NORMALS_DEVIATION: Unable to triangulate polygon"), checkRingPoints]);
-        return;
+        triangulationErrorPoints = checkRingPoints;
+        return false;
       }
 
       var faceNormal;
@@ -302,10 +303,15 @@ var GE_P_NON_PLANAR_POLYGON_NORMALS_DEVIATION = function(rings) {
       }
     });
 
-    if (nonPlanars.length === 0) {
+    if (triangulationErrorPoints) {
+      callback(null, [new Error("GE_P_NON_PLANAR_POLYGON_NORMALS_DEVIATION: Unable to triangulate polygon"), checkRingPoints]);
+      return;
+    } else if (nonPlanars.length === 0) {
       callback(null);
+      return;
     } else {
       callback(null, [new Error("GE_P_NON_PLANAR_POLYGON_NORMALS_DEVIATION: The orientation of the normal of each triangle must not deviate more than 1 degree"), nonPlanars]);
+      return;
     }
   };
 };

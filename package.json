@@ -1,6 +1,6 @@
 {
   "name": "citygml-validate-polygon",
-  "version": "0.1.12",
+  "version": "0.1.13",
   "description": "Validate a CityGML polygon against the QIE suite",
   "main": "index.js",
   "scripts": {
@@ -33,7 +33,7 @@
     "points-3d-to-2d": "^0.1.1",
     "polygon": "^1.0.1",
     "sylvester": "0.0.21",
-    "triangulate": "^0.1.1",
+    "triangulate": "^0.1.4",
     "vec2": "^1.6.0"
   }
 }
